@@ -33,7 +33,8 @@ class Simon
   end
 
   def require_sequence
-
+    puts "Enter sequence"
+    user_input = gets.chomp
   end
 
   def add_random_color
@@ -41,11 +42,11 @@ class Simon
   end
 
   def round_success_message
-
+    puts "You entered right sequence"
   end
 
   def game_over_message
-
+    puts "You entered wrong sequence"
   end
 
   def reset_game
