@@ -1,11 +1,13 @@
 require "byebug"
 class Board
   attr_accessor :cups
-  attr_reader :player1, :player2, :current_player
+  attr_reader :player1, :player2, :current_player, :p1_point_cup_idx, :p2_point_cup_idx
 
   def initialize(name1, name2)
     @cups = Array.new(14){[:stone,:stone,:stone,:stone]}
     @player1, @player2 = name1, name2
+    @p1_point_cup_idx = 6
+    @p2_point_cup_idx = 13
     cups[6] = []
     cups[13] = []
   end
@@ -21,24 +23,25 @@ class Board
   end
 
   def make_move(start_pos, current_player_name)
-    current_player = current_player_name
+    @current_player = current_player_name
     stone_count = cups[start_pos].count
-    ending_cup_idx = (start_pos + stone_count) % 13
+    ending_cup_idx = (start_pos + stone_count) % 14
     cups[start_pos] = []
     i = 1
     while i <= stone_count
-      if (start_pos + i) % 13 == 13 && current_player_name == player1
-        ending_cup_idx = (ending_cup_idx + 1) % 13
+      if (start_pos + i) % 14 == 13 && current_player_name == player1
+        ending_cup_idx = (ending_cup_idx + 1) % 14
         cups[ending_cup_idx] << :stone
         next
-      elsif (start_pos + i) % 13 == 6 && current_player_name == player2
-        ending_cup_idx = (ending_cup_idx + 1) % 13
+      elsif (start_pos + i) % 14 == 6 && current_player_name == player2
+        ending_cup_idx = (ending_cup_idx + 1) % 14
         cups[ending_cup_idx] << :stone
         next
       else
-        cups[(start_pos + i) % 13] << :stone
+        cups[(start_pos + i) % 14] << :stone
       end
-
+      render
+      # debugger
       i += 1
     end
 
@@ -57,13 +60,20 @@ class Board
     # helper method to determine what #make_move returns
     # make_move(ending_cup_idx, current_player) if cups[ending_cup_idx].length > 1
     # debugger
-    if cups[ending_cup_idx].length < 1
-      return :switch
+    if ending_cup_idx == 13 || ending_cup_idx == 6
+      return :prompt
     elsif cups[ending_cup_idx].empty?
       return :switch
     else
-      return :prompt
+      return ending_cup_idx
     end
+    # if cups[ending_cup_idx].length < 1
+    #   return :switch
+    # elsif cups[ending_cup_idx].empty?
+    #   return :switch
+    # elsif cups[ending_cup_idx]
+    #   return ending_cup_idx
+    # end
     # if cups[ending_cup_idx].length <= 1
   end
 
